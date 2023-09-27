@@ -91,7 +91,7 @@ class External:
         data = request.get_json()
 
         # Validate data
-        if len(self.key_store.get_keys(master_sae_id, slave_sae_id)) == 0 or len(
+        if len(self.key_store.get_keys(master_sae_id, slave_sae_id)) == 0 and len(
                 self.key_store.get_keys(slave_sae_id, master_sae_id)) == 0:
             return {'message': 'The given master_sae_id is not involved in any key exchanges.'}, 401
 
