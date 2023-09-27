@@ -30,7 +30,8 @@ class KeyStore:
 
         if len(_keys) > 0:
             for key in keys:
-                _keys.append(key)
+                if key['key_ID'] not in list(map(lambda x: x['key_ID'], _keys)):
+                    _keys.append(key)
 
             keys = _keys
         else:
