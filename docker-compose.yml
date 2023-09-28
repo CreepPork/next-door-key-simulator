@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  kme-1:
+    build: .
+    container_name: kme-1
+    restart: always
+    environment:
+      - PORT=8010
+      - KME_ID=9b7703f1-9b6d-403d-b850-18a1b6fd6d8f
+      - ATTACHED_SAE_ID=25840139-0dd4-49ae-ba1e-b86731601803
+      - DEFAULT_KEY_SIZE=512
+      - MAX_KEY_COUNT=100000
+      - MAX_KEYS_PER_REQUEST=128
+      - MAX_KEY_SIZE=1024
+      - MIN_KEY_SIZE=64
+      - OTHER_KMES=https://172.23.1.20:8020
+      - CA_FILE=/certs/ca.crt.pem
+      - KME_CERT=/certs/kme-1.crt.pem
+      - KME_KEY=/certs/kme-1.key.pem
+      - SAE_CERT=/certs/sae-1.crt.pem
+    volumes:
+      - ./certs:/certs:ro
+    ports:
+      - "8010:8010"
+    networks:
+      kme-network:
+        ipv4_address: 172.23.1.10
+        aliases:
+          - kme-1
+
+  kme-2:
+    build: .
+    container_name: kme-2
+    restart: always
+    environment:
+      - PORT=8020
+      - KME_ID=ffb23f4d-5d5b-47e5-a8c5-fe9e47d646cd
+      - ATTACHED_SAE_ID=c565d5aa-8670-4446-8471-b0e53e315d2a
+      - DEFAULT_KEY_SIZE=512
+      - MAX_KEY_COUNT=100000
+      - MAX_KEYS_PER_REQUEST=128
+      - MAX_KEY_SIZE=1024
+      - MIN_KEY_SIZE=64
+      - OTHER_KMES=https://172.23.1.10:8010
+      - CA_FILE=/certs/ca.crt.pem
+      - KME_CERT=/certs/kme-2.crt.pem
+      - KME_KEY=/certs/kme-2.key.pem
+      - SAE_CERT=/certs/sae-2.crt.pem
+    volumes:
+      - ./certs:/certs:ro
+    ports:
+      - "8020:8020"
+    networks:
+      kme-network:
+        ipv4_address: 172.23.1.20
+        aliases:
+          - kme-2
+
+networks:
+  kme-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-kme
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: ${IPV4_NETWORK:-172.23.1}.0/24
