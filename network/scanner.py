@@ -27,8 +27,9 @@ class Scanner:
                     ).json()
 
                     self.kme_list.append(data)
-                except requests.exceptions.RequestException:
+                except requests.exceptions.RequestException as exception:
                     print(f'Unable to fetch KME status for {kme}.')
+                    print(exception)
                 except requests.exceptions.JSONDecodeError:
                     print(f'KME {kme} did not return a valid JSON response.')
 
