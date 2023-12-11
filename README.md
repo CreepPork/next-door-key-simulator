@@ -54,3 +54,21 @@ If you are using Postman, this can be easily enabled by:
   as follows: Cog > Settings > Certificates > Client Certificates > Add Certificate.
 
 ![postman-config](docs/1.png)
+
+#### Waiting for response
+
+Sometimes, the Docker containers will get stuck and are not either responding to user requests, or doing any kind of
+sync operations between the KMEs.
+
+It might be caused by host network interruptions, both containers starting at the same time and not being able to
+connect, and possibly more scenarios.
+
+The best option, is to just restart either 1 or both containers using this command in your terminal:
+
+```bash
+docker compose restart
+docker compose logs -f
+```
+
+This will restart both containers, and afterward enter following mode for the console logs. Then you should see the new
+log entries starting to appear.
