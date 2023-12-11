@@ -7,12 +7,16 @@ class ChatServer:
 
     async def handle_client(self, reader, writer):
         self.clients.append(writer)
+
         address = writer.get_extra_info('peername')
+
         print(f'New connection from {address}')
+        await self.broadcast('<system,joined>', writer)
 
         try:
             while True:
-                data = await reader.read(100)
+                # Read to a maximum of 4096 bytes
+                data = await reader.read(4096)
                 if not data:
                     break
 
@@ -20,10 +24,8 @@ class ChatServer:
                 print(f'Received message from {address}: {message}')
 
                 await self.broadcast(message, writer)
-
         except asyncio.CancelledError:
             pass
-
         finally:
             print(f'Connection closed from {address}')
             self.clients.remove(writer)
@@ -48,6 +50,6 @@ class ChatServer:
             await server.serve_forever()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     chat_server = ChatServer()
     asyncio.run(chat_server.run_server('127.0.0.1', 8888))
