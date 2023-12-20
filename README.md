@@ -1,4 +1,4 @@
-# QKD KME Simulator
+# Next Door Key Simulator
 
 Quantum key distribution (QKD) key management entity (KME) simulator based on
 the [ETSI GS QKD 014 V1.1.1](https://www.etsi.org/deliver/etsi_gs/QKD/001_099/014/01.01.01_60/gs_qkd014v010101p.pdf)
@@ -18,8 +18,8 @@ standard.
 
 ## Installation
 
-1. `git clone https://github.com/CreepPork/qkd-kme-simulator`
-2. `cd qkd-kme-simulator`
+1. `git clone https://github.com/CreepPork/next-door-key-simulator`
+2. `cd next-door-key-simulator`
 3. `bash ./certs/generate.sh`
 4. `docker compose up -d`
 

@@ -6,8 +6,8 @@ ENV HOST=0.0.0.0
 ENV PORT=8090
 ENV PYTHONUNBUFFERED=1
 
-COPY . /opt/qkd-kme-simulator
-WORKDIR /opt/qkd-kme-simulator
+COPY . /opt/next-door-key-simulator
+WORKDIR /opt/next-door-key-simulator
 
 RUN apk add -U --no-cache bash curl
 

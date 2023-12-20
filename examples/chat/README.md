@@ -28,8 +28,8 @@ The clients handle encryption of their messages and retrieve the encryption key 
 
 ## Running
 
-1. `git clone https://github.com/CreepPork/qkd-kme-simulator`
-2. `cd qkd-kme-simulator`
+1. `git clone https://github.com/CreepPork/next-door-key-simulator`
+2. `cd next-door-key-simulator`
 3. `bash ./certs/generate.sh`
 4. `docker compose up -d`
 5. `cd examples/chat`
