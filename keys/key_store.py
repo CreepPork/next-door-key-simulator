@@ -11,11 +11,14 @@ class KeyStore:
         self.container: list[dict[str, str, list]] = []
         self.broadcaster = broadcaster
 
-    def get_keys(self, master_sae_id: str, slave_sae_id: str) -> list:
-        container = list(filter(
+    def get_sae_key_container(self, master_sae_id: str, slave_sae_id) -> list:
+        return list(filter(
             lambda x: x['master_sae_id'] == master_sae_id and x['slave_sae_id'] == slave_sae_id,
             self.container
         ))
+
+    def get_keys(self, master_sae_id: str, slave_sae_id: str) -> list:
+        container = self.get_sae_key_container(master_sae_id, slave_sae_id)
 
         return [] if len(container) == 0 else container[0]['keys']
 
@@ -26,17 +29,18 @@ class KeyStore:
         }
 
     def append_keys(self, master_sae_id: str, slave_sae_id: str, keys: list, do_broadcast: bool = True) -> list:
-        # TODO: Investigate this if is modified by reference or not (seems like not)
-        #   But this might be the reason for the not shared keys.
-        _keys = self.get_keys(master_sae_id, slave_sae_id)
+        container = self.get_sae_key_container(master_sae_id, slave_sae_id)
 
-        if len(_keys) > 0:
-            for key in keys:
-                if key['key_ID'] not in list(map(lambda x: x['key_ID'], _keys)):
-                    _keys.append(key)
-
-            keys = _keys
+        if len(container) == 0:
+            self.container.append({'master_sae_id': master_sae_id, 'slave_sae_id': slave_sae_id, 'keys': keys})
         else:
+            # Remove the old keys
+            self.container = list(filter(
+                lambda x: x['master_sae_id'] != master_sae_id and x['slave_sae_id'] != slave_sae_id,
+                self.container
+            ))
+
+            # Append new keys
             self.container.append({'master_sae_id': master_sae_id, 'slave_sae_id': slave_sae_id, 'keys': keys})
 
         if do_broadcast:
