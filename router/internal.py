@@ -16,6 +16,11 @@ class Internal:
             'SAE_ID': os.getenv('ATTACHED_SAE_ID'),
         }
 
+    def get_key_pool(self):
+        return {
+            'keys': self.key_store.key_pool.keys
+        }
+
     def do_kme_key_exchange(self, request: flask.Request):
         data = request.get_json()
 

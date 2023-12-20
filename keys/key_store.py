@@ -1,14 +1,12 @@
-import base64
-import os
-import uuid
-
+from keys.key_pool import KeyPool
 from network.broadcaster import Broadcaster
 
 
 # noinspection PyMethodMayBeStatic
 class KeyStore:
-    def __init__(self, broadcaster: Broadcaster):
+    def __init__(self, key_pool: KeyPool, broadcaster: Broadcaster):
         self.container: list[dict[str, str, list]] = []
+        self.key_pool = key_pool
         self.broadcaster = broadcaster
 
     def get_sae_key_container(self, master_sae_id: str, slave_sae_id) -> list:
@@ -17,16 +15,13 @@ class KeyStore:
             self.container
         ))
 
+    def get_new_key(self, key_size: int) -> dict[str, str] | None:
+        return self.key_pool.get_key(key_size)
+
     def get_keys(self, master_sae_id: str, slave_sae_id: str) -> list:
         container = self.get_sae_key_container(master_sae_id, slave_sae_id)
 
         return [] if len(container) == 0 else container[0]['keys']
-
-    def generate_key(self, size: int) -> dict:
-        return {
-            'key_ID': str(uuid.uuid4()),
-            'key': base64.b64encode(os.urandom(size)).decode('ascii')
-        }
 
     def append_keys(self, master_sae_id: str, slave_sae_id: str, keys: list, do_broadcast: bool = True) -> list:
         container = self.get_sae_key_container(master_sae_id, slave_sae_id)

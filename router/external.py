@@ -48,7 +48,7 @@ class External:
 
         # Get data
         number_of_keys = data.get('number', 1)
-        key_size = data.get('size', os.getenv('DEFAULT_KEY_SIZE'))
+        key_size = data.get('size', int(os.getenv('DEFAULT_KEY_SIZE')))
 
         # Validate data
         if number_of_keys > int(os.getenv('MAX_KEYS_PER_REQUEST')):
@@ -73,11 +73,14 @@ class External:
         if len(stored_keys) + number_of_keys > int(os.getenv('MAX_KEY_COUNT')):
             return {'message': 'The requested total of keys exceeds the maximum key count that can be stored.'}, 400
 
+        if number_of_keys > len(self.key_store.key_pool.keys):
+            return {'message': 'The requested key amount exceeds the generated key count. Try again later.'}, 400
+
         # Generate keys
         keys = []
 
         for i in range(number_of_keys):
-            keys.append(self.key_store.generate_key(key_size))
+            keys.append(self.key_store.get_new_key(key_size))
 
         self.key_store.append_keys(master_sae_id, slave_sae_id, keys)
 
