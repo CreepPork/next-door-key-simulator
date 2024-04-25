@@ -2,12 +2,13 @@ import os
 
 import flask
 
+from network.scanner import Scanner
 from keys.key_store import KeyStore
-
 
 # noinspection PyMethodMayBeStatic
 class Internal:
-    def __init__(self, key_store: KeyStore):
+    def __init__(self, scanner: Scanner, key_store: KeyStore):
+        self.scanner = scanner
         self.key_store = key_store
 
     def get_kme_status(self):
@@ -40,3 +41,11 @@ class Internal:
             do_broadcast=False)
 
         return {'message': 'Keys have been removed from the local key store.'}
+
+    def do_announce(self, request: flask.Request):
+        print('DEBG: Someone is announcing')
+        self.scanner.stop.set()
+        self.scanner.stop.clear()
+        print('DEBG: Announcement finished')
+
+        return {'message': 'Scanner is being unblocked.'}

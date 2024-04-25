@@ -29,7 +29,7 @@ class App:
         self.key_store = KeyStore(self.key_pool, self.broadcaster)
 
         self.external_routes = External(self.scanner, self.key_store)
-        self.internal_routes = Internal(self.key_store)
+        self.internal_routes = Internal(self.scanner, self.key_store)
 
     def start(self):
         scanner_thread = threading.Thread(target=self.scanner.start)

@@ -53,6 +53,10 @@ def key_exchange():
 def key_remove_exchange():
     return app.internal_routes.do_remove_kme_key(request)
 
+@instance.route('/api/v1/kme/announce', methods=['POST'])
+def kme_announce():
+    return app.internal_routes.do_announce(request)
+
 
 @instance.route('/api/v1/keys/<slave_sae_id>/status')
 def get_status(slave_sae_id):
