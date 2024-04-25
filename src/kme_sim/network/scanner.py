@@ -10,6 +10,8 @@ class Scanner:
     def __init__(self, kme_list: list, kme_lock: threading.Lock):
         self.kme_list = kme_list
         self.kme_lock = kme_lock
+
+        self.do_not_announce = threading.Event()
         self.stop = threading.Event()
 
     def start(self) -> None:
@@ -77,6 +79,9 @@ class Scanner:
         return None
 
     def announce_presence(self):
+        if self.do_not_announce.is_set():
+            return
+
         for kme in self.kme_list:
             logger.debug('Announcing to everyone')
 
@@ -84,5 +89,6 @@ class Scanner:
                 url=f'{kme["KME_URL"]}/api/v1/kme/announce',
                 verify=False,
                 cert=(os.getenv('KME_CERT'), os.getenv('KME_KEY')),
+                timeout=15
             )
 

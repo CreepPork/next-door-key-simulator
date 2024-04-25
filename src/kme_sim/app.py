@@ -39,6 +39,11 @@ def get_kme_status():
     return app.internal_routes.get_kme_status()
 
 
+@instance.route('/api/v1/kme/network')
+def get_network():
+    return app.internal_routes.get_network()
+
+
 @instance.route('/api/v1/kme/key-pool')
 def get_key_pool():
     return app.internal_routes.get_key_pool()
@@ -52,6 +57,7 @@ def key_exchange():
 @instance.route('/api/v1/kme/keys/remove', methods=['POST'])
 def key_remove_exchange():
     return app.internal_routes.do_remove_kme_key(request)
+
 
 @instance.route('/api/v1/kme/announce', methods=['POST'])
 def kme_announce():

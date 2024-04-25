@@ -24,6 +24,9 @@ class Internal:
             'keys': self.key_store.key_pool.keys
         }
 
+    def get_network(self):
+        return self.scanner.kme_list
+
     def do_kme_key_exchange(self, request: flask.Request):
         data = request.get_json()
 
@@ -46,8 +49,13 @@ class Internal:
 
     def do_announce(self, request: flask.Request):
         logger.debug('Someone is announcing')
+
+        # Prevent double requests
+        self.scanner.do_not_announce.set()
+
         self.scanner.stop.set()
         self.scanner.stop.clear()
+
         logger.debug('Announcement finished')
 
-        return {'message': 'Scanner is being unblocked.'}
+        return {'message': 'Scanner is being re-run.'}

@@ -23,4 +23,4 @@ class Broadcaster:
         data = json.loads(json.dumps(data, default=str))
 
         for kme in self.other_kmes:
-            requests.post(f'{kme}{url}', verify=False, cert=self.certs, json=data)
+            requests.post(f'{kme}{url}', verify=False, cert=self.certs, json=data, timeout=15)

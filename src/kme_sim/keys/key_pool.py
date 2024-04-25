@@ -34,14 +34,18 @@ class KeyPool:
 
     def start(self) -> None:
         while not self.stop.is_set():
-            self.gen_lock.acquire(blocking=True)
+            if not self.gen_lock.acquire(blocking=True, timeout=30):
+                logger.warn('Failed to acquire gen_lock in key pool thread')
+                continue
 
             if len(self.keys) <= self.max_key_count:
                 self.add_key()
 
                 logger.info(f'Key generated ({len(self.keys)}/{self.max_key_count})')
             else:
-                logger.info('Key pool is full')
+                logger.debug('Key pool is full')
 
             self.gen_lock.release()
             self.stop.wait(float(os.getenv('KEY_GEN_SEC_TO_GEN')))
+
+        logger.warn('Key pool thread stopped')
