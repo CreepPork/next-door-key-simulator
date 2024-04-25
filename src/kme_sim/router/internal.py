@@ -5,6 +5,8 @@ import flask
 from network.scanner import Scanner
 from keys.key_store import KeyStore
 
+import logger.logger as logger
+
 # noinspection PyMethodMayBeStatic
 class Internal:
     def __init__(self, scanner: Scanner, key_store: KeyStore):
@@ -43,9 +45,9 @@ class Internal:
         return {'message': 'Keys have been removed from the local key store.'}
 
     def do_announce(self, request: flask.Request):
-        print('DEBG: Someone is announcing')
+        logger.debug('Someone is announcing')
         self.scanner.stop.set()
         self.scanner.stop.clear()
-        print('DEBG: Announcement finished')
+        logger.debug('Announcement finished')
 
         return {'message': 'Scanner is being unblocked.'}

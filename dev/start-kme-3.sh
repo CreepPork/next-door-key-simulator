@@ -7,7 +7,8 @@ cd "$__dir"
 
 source ../venv/bin/activate
 
-ls ../src/**/*.py | PORT=8030 \
+ls ../src/**/*.py | DEBUG=1 \
+PORT=8030 \
 KME_ID=b5c4f6a4-7236-4136-ac2b-4f0d888e80fb \
 ATTACHED_SAE_ID=875845ac-dd9a-451b-b975-055fac89cefe \
 DEFAULT_KEY_SIZE=32 \

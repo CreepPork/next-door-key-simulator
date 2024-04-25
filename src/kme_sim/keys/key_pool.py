@@ -2,6 +2,7 @@ import os
 import threading
 
 from keys.key_generator import KeyGenerator
+import logger.logger as logger
 
 
 class KeyPool:
@@ -23,11 +24,11 @@ class KeyPool:
         # If non-default key size is requested, then we generate that directly.
         # Not sure how this would happen in the real device.
         if key_size and key_size != self.default_key_size:
-            print('INFO: Generating key not from pool, for different size request')
+            logger.info('Generating key not from pool, for different size request')
 
             return KeyGenerator.generate_key(key_size)
 
-        print(f'INFO: Removing key from pool ({len(self.keys) - 1}/{self.max_key_count})')
+        logger.info(f'Removing key from pool ({len(self.keys) - 1}/{self.max_key_count})')
 
         return self.keys.pop()
 
@@ -38,9 +39,9 @@ class KeyPool:
             if len(self.keys) <= self.max_key_count:
                 self.add_key()
 
-                print(f'INFO: Key generated ({len(self.keys)}/{self.max_key_count})')
+                logger.info(f'Key generated ({len(self.keys)}/{self.max_key_count})')
             else:
-                print('INFO: Key pool is full')
+                logger.info('Key pool is full')
 
             self.gen_lock.release()
             self.stop.wait(float(os.getenv('KEY_GEN_SEC_TO_GEN')))
