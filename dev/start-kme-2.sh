@@ -7,7 +7,7 @@ cd "$__dir"
 
 source ../venv/bin/activate
 
-ls ../*.py | PORT=8020 \
+ls ../src/**/*.py| PORT=8020 \
 KME_ID=ffb23f4d-5d5b-47e5-a8c5-fe9e47d646cd \
 ATTACHED_SAE_ID=c565d5aa-8670-4446-8471-b0e53e315d2a \
 DEFAULT_KEY_SIZE=32 \
@@ -21,4 +21,4 @@ CA_FILE=../certs/ca.crt.pem \
 KME_CERT=../certs/kme-2.crt.pem \
 KME_KEY=../certs/kme-2.key.pem \
 SAE_CERT=../certs/sae-2.crt.pem \
-entr -r python3 ../app.py
+entr -r python3 ../src/kme-sim/app.py
