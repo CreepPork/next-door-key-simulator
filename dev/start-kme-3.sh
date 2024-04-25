@@ -21,4 +21,4 @@ CA_FILE=../certs/ca.crt.pem \
 KME_CERT=../certs/kme-3.crt.pem \
 KME_KEY=../certs/kme-3.key.pem \
 SAE_CERT=../certs/sae-3.crt.pem \
-entr -r python3 ../src/kme-sim/app.py
+entr -r python3 ../src/kme_sim/app.py
