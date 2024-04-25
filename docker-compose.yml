@@ -15,7 +15,7 @@ services:
       - MAX_KEY_SIZE=1024
       - MIN_KEY_SIZE=32
       - KEY_GEN_SEC_TO_GEN=30
-      - OTHER_KMES=https://172.23.1.20:8020
+      - OTHER_KMES=https://172.23.1.20:8020,https://172.23.1.30:8030
       - CA_FILE=/certs/ca.crt.pem
       - KME_CERT=/certs/kme-1.crt.pem
       - KME_KEY=/certs/kme-1.key.pem
@@ -49,7 +49,7 @@ services:
       - MAX_KEY_SIZE=1024
       - MIN_KEY_SIZE=32
       - KEY_GEN_SEC_TO_GEN=30
-      - OTHER_KMES=https://172.23.1.10:8010
+      - OTHER_KMES=https://172.23.1.10:8010,https://172.23.1.30:8030
       - CA_FILE=/certs/ca.crt.pem
       - KME_CERT=/certs/kme-2.crt.pem
       - KME_KEY=/certs/kme-2.key.pem
@@ -70,6 +70,43 @@ services:
         ipv4_address: 172.23.1.20
         aliases:
           - kme-2
+
+  kme-3:
+    image: creeppork/next-door-key-simulator:latest
+    container_name: kme-3
+    restart: always
+    environment:
+      - PORT=8030
+      - KME_ID=b5c4f6a4-7236-4136-ac2b-4f0d888e80fb
+      - ATTACHED_SAE_ID=875845ac-dd9a-451b-b975-055fac89cefe
+      - DEFAULT_KEY_SIZE=32
+      - MAX_KEY_COUNT=100000
+      - MAX_KEYS_PER_REQUEST=128
+      - MAX_KEY_SIZE=1024
+      - MIN_KEY_SIZE=32
+      - KEY_GEN_SEC_TO_GEN=30
+      - OTHER_KMES=https://172.23.1.10:8010,https://172.23.1.20:8020
+      - CA_FILE=/certs/ca.crt.pem
+      - KME_CERT=/certs/kme-3.crt.pem
+      - KME_KEY=/certs/kme-3.key.pem
+      - SAE_CERT=/certs/sae-3.crt.pem
+    volumes:
+      - ./certs:/certs:ro
+    ports:
+      - "8030:8030"
+    depends_on:
+      - kme-1
+      - kme-2
+    healthcheck:
+      test: curl -f -k --cert /certs/sae-3.crt.pem --key /certs/sae-3.key.pem https://172.23.1.30:8030/api/v1/keys/c565d5aa-8670-4446-8471-b0e53e315d2a/status || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 1
+    networks:
+      kme-network:
+        ipv4_address: 172.23.1.30
+        aliases:
+          - kme-3
 
 networks:
   kme-network:
