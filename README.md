@@ -72,3 +72,8 @@ docker compose logs -f
 
 This will restart both containers, and afterward enter following mode for the console logs. Then you should see the new
 log entries starting to appear.
+
+## Disclaimer
+
+This project originally has been developed for LatQN (Latvian National Quantum Network) project in association with
+LVRTC (Latvian State Radio and Television Center).
