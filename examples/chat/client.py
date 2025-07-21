@@ -32,20 +32,38 @@ class KmeModule:
 
         return response.json()
 
+    def __get(self, url: str) -> dict:
+        response = requests.get(f'{self.kme_url}{url}', verify=False, cert=self.kme_certs)
+
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            print(f'ERR: {response.json()}')
+            raise
+
+        return response.json()
+
     def create_key(self, slave_sae_id: str) -> dict:
-        return self.__post(f'/api/v1/keys/{slave_sae_id}/enc_keys', {
-            'number': 1,
-            'size': 32  # Fernet key length
-        })['keys'][0]
+        if sys.argv.count('--post') > 0:
+            return self.__post(f'/api/v1/keys/{slave_sae_id}/enc_keys', {
+                'number': 1,
+                'size': 32  # Fernet key length
+            })['keys'][0]
+        else:
+            return self.__get(f'/api/v1/keys/{slave_sae_id}/enc_keys')['keys'][0]
 
     def get_key(self, master_sae_id: str, key_id: str) -> dict:
-        return self.__post(f'/api/v1/keys/{master_sae_id}/dec_keys', {
-            'key_IDs': [
-                {
-                    'key_ID': key_id
-                }
-            ]
-        })
+        if sys.argv.count('--post') > 0:
+            # If --post is used, we assume the key exchange has already been done
+            return self.__post(f'/api/v1/keys/{master_sae_id}/dec_keys', {
+                'key_IDs': [
+                    {
+                        'key_ID': key_id
+                    }
+                ]
+            })
+        else:
+            return self.__get(f'/api/v1/keys/{master_sae_id}/dec_keys?key_ID={key_id}')
 
     def encrypt_message(self, key: str, message: str) -> bytes:
         return base64.b64encode(

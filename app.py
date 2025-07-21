@@ -59,12 +59,12 @@ def get_status(slave_sae_id):
     return app.external_routes.get_status(request, escape(slave_sae_id))
 
 
-@instance.route('/api/v1/keys/<slave_sae_id>/enc_keys', methods=['POST'])
+@instance.route('/api/v1/keys/<slave_sae_id>/enc_keys', methods=['POST','GET'])
 def get_key(slave_sae_id):
     return app.external_routes.get_key(request, escape(slave_sae_id))
 
 
-@instance.route('/api/v1/keys/<master_sae_id>/dec_keys', methods=['POST'])
+@instance.route('/api/v1/keys/<master_sae_id>/dec_keys', methods=['POST','GET'])
 def get_key_with_ids(master_sae_id):
     return app.external_routes.get_key_with_ids(request, escape(master_sae_id))
 

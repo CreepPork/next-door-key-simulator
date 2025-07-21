@@ -44,11 +44,16 @@ class External:
     def get_key(self, request: flask.Request, slave_sae_id: str):
         security.ensure_valid_sae_id(request)
 
-        data = request.get_json()
+        if request.method == 'POST':
+            data = request.get_json()
 
-        # Get data
-        number_of_keys = data.get('number', 1)
-        key_size = data.get('size', int(os.getenv('DEFAULT_KEY_SIZE')))
+            # Get data
+            number_of_keys = data.get('number', 1)
+            key_size = data.get('size', int(os.getenv('DEFAULT_KEY_SIZE')))
+        else:
+            # GET request, use default values
+            number_of_keys = 1
+            key_size = int(os.getenv('DEFAULT_KEY_SIZE'))
 
         # Validate data
         if number_of_keys > int(os.getenv('MAX_KEYS_PER_REQUEST')):
@@ -91,7 +96,6 @@ class External:
 
         # Get data
         slave_sae_id = request.environ['client_cert_common_name']
-        data = request.get_json()
 
         # Validate data
         if (
@@ -101,8 +105,16 @@ class External:
             return {'message': 'The given master_sae_id is not involved in any key exchanges.'}, 401
 
         try:
-            # Get the keys & prepare for removal those that just have been used
-            requested_keys = list(map(lambda x: x['key_ID'], data['key_IDs']))
+            if request.method == 'POST':
+                data = request.get_json()
+
+                # Get data
+                requested_keys = list(map(lambda x: x['key_ID'], data['key_IDs']))
+                print(requested_keys)
+            else:
+                # GET request, use all keys
+                requested_keys = list(request.args.getlist('key_ID'))
+                print(requested_keys)
 
             selected_keys = list(filter(
                 lambda x: x['key_ID'] in requested_keys,
