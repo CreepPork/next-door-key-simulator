@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   kme-1:
     image: creeppork/next-door-key-simulator:latest
+    build: .
     container_name: kme-1
     restart: always
     environment:
@@ -37,6 +36,7 @@ services:
 
   kme-2:
     image: creeppork/next-door-key-simulator:latest
+    build: .
     container_name: kme-2
     restart: always
     environment:
